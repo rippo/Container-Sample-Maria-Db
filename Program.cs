@@ -1,37 +1,50 @@
-﻿using System.Data;
-using System.Data.Common;
+﻿using System.Reflection;
+using Container.Infrastructure;
+using Container.Infrastructure.Context;
+using Container.Infrastructure.Models;
 using Dapper;
-using MySqlConnector;
+using FluentMigrator.Runner;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Container;
 
-class Program
+static class Program
 {
     static async Task Main(string[] args)
     {
-        using var connection = ConnectionFactory.GetOpenConnection();
+        var serviceProvider = CreateServices();
+        // Put the database update into a scope to ensure
+        // that all resources will be disposed.
+        using (var scope = serviceProvider.CreateScope())
+        {
+            UpdateDatabase(scope.ServiceProvider);
+        }
         
-        var data = await connection.QueryAsync("select * from tmo;");
+        using var connection = DapperContext.GetOpenConnection();
+        
+        var data = await connection.QueryAsync<Company>("select * from Companies;");
         foreach (var row in data)
         {
-            Console.WriteLine($"Id: {row.Id}");
+            Console.WriteLine($"Id: {row.Id} - {row.Name}");
         }
     }
+
+   
+     private static IServiceProvider CreateServices()
+     {
+         return new ServiceCollection()
+             .AddLogging(c => c.AddFluentMigratorConsole())
+             .AddSingleton<DapperContext>()
+             .AddFluentMigratorCore()
+             .ConfigureRunner(c=> c.AddMySql5()
+                 .WithGlobalConnectionString(ApplicationSettings.DbConnectionString)
+                 .ScanIn(Assembly.GetExecutingAssembly()).For.Migrations())
+             .BuildServiceProvider(false);
+     }
+
+     private static void UpdateDatabase(IServiceProvider serviceProvider)
+     {
+         var runner = serviceProvider.GetRequiredService<IMigrationRunner>();
+         runner.MigrateUp();
+     }     
 }
-
-public class ConnectionFactory
-{
-    public static IDbConnection GetOpenConnection()
-    {
-        var connection = (DbConnection)new MySqlConnection(ApplicationSettings.DbConnectionString);
-        connection.Open();
-
-        return connection;
-    }
-}
-
-public static class ApplicationSettings
-{
-    public static string DbConnectionString => "Data Source=127.0.0.1;Initial Catalog=test;UID=user;PWD=password;";
-}
-
