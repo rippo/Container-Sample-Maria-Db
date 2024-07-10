@@ -1,4 +1,4 @@
 # TODO
 
 - [x] Add Fluent Migrations to create DB
-- [ ] Add Tables via fluent
+- [x] Add Tables via fluent
