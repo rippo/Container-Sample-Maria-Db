@@ -1,0 +1,17 @@
+﻿volumes:
+  data: 
+    
+name: development
+
+services:
+  mariadb-10-6-18:
+    image: mariadb:10.6.18
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: test
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password 
+    volumes:
+      - /D/Projects/Scratch/Containers/db/:/var/lib/mysql
+    ports:
+      - "3306:3306"
