@@ -2,8 +2,8 @@ using FluentMigrator;
 
 namespace Container.Infrastructure.Models;
 
-[Migration(202106280001)]
-public class InitialTables_202106280001 : Migration
+[Migration(202407100001)]
+public class InitialTables_202407100001 : Migration
 {
     public override void Down()
     {
