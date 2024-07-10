@@ -22,7 +22,7 @@ static class Program
         
         using var connection = DapperContext.GetOpenConnection();
         
-        var data = await connection.QueryAsync<Company>("select * from Companies;");
+        var data = await connection.QueryAsync<Company>("select * from companies;");
         foreach (var row in data)
         {
             Console.WriteLine($"Id: {row.Id} - {row.Name}");
@@ -45,6 +45,8 @@ static class Program
      private static void UpdateDatabase(IServiceProvider serviceProvider)
      {
          var runner = serviceProvider.GetRequiredService<IMigrationRunner>();
+         runner.ListMigrations();
+         //runner.MigrateDown(202407100001);
          runner.MigrateUp();
      }     
 }
