@@ -6,6 +6,7 @@ name: development
 
 services:
   mariadb-10-5-29:
+    container_name: mariadb-10-5-29
     image: mariadb:10.5.29
     environment:
       MYSQL_ROOT_PASSWORD: password
@@ -17,6 +18,7 @@ services:
     ports:
       - "3309:3306"  
   mariadb-10-4-34:
+    container_name: mariadb-10-4-34
     image: mariadb:10.4.34
     environment:
       MYSQL_ROOT_PASSWORD: password
@@ -28,6 +30,7 @@ services:
     ports:
       - "3308:3306"
   mariadb-10-6-18:
+    container_name: mariadb-10-6-18
     image: mariadb:10.6.18
     restart: unless-stopped
     environment:
@@ -40,6 +43,7 @@ services:
     ports:
       - "3306:3306"
   mariadb-10-11-9:
+    container_name: mariadb-10-11-9
     image: mariadb:10.11.9
     environment:
       MYSQL_ROOT_PASSWORD: password
@@ -51,6 +55,7 @@ services:
     ports:
       - "3307:3306"
   mssql-2019:
+    container_name: mssql-2019
     image: mcr.microsoft.com/mssql/server:2019-latest
     restart: unless-stopped
     environment:
@@ -63,6 +68,7 @@ services:
     ports:
       - "1433:1433"
   mssql-2025:
+    container_name: mssql-2025
     image: mcr.microsoft.com/mssql/server:2025-latest
     restart: unless-stopped
     environment:
