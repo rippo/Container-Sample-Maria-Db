@@ -1,11 +1,35 @@
 ﻿volumes:
-  data: 
+  data:
+  mssql-2025-data:
     
 name: development
 
 services:
+  mariadb-10-5-29:
+    image: mariadb:10.5.29
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: test
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    volumes:
+      - /D/Projects/Scratch/Containers/db-10.5.29/:/var/lib/mysql
+    ports:
+      - "3309:3306"  
+  mariadb-10-4-34:
+    image: mariadb:10.4.34
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: test
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    volumes:
+      - /D/Projects/Scratch/Containers/db-10.4.34/:/var/lib/mysql
+    ports:
+      - "3308:3306"
   mariadb-10-6-18:
     image: mariadb:10.6.18
+    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: test
@@ -15,3 +39,49 @@ services:
       - /D/Projects/Scratch/Containers/db/:/var/lib/mysql
     ports:
       - "3306:3306"
+  mariadb-10-11-9:
+    image: mariadb:10.11.9
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: test
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    volumes:
+      - /D/Projects/Scratch/Containers/db-10.11.9/:/var/lib/mysql
+    ports:
+      - "3307:3306"
+  mssql-2019:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    restart: unless-stopped
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "!Yran5act10n!"
+      MSSQL_PID: "Developer"
+    volumes:
+      - /D/Projects/Scratch/Containers/mssql/2019-dbs-data:/var/opt/mssql/data
+      - /D/Projects/Scratch/Containers/mssql/2019-dbs-log:/var/opt/mssql/log
+    ports:
+      - "1433:1433"
+  mssql-2025:
+    image: mcr.microsoft.com/mssql/server:2025-latest
+    restart: unless-stopped
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "!Yran5act10n!"
+      MSSQL_PID: "Developer"
+    volumes:
+      - mssql-2025-data:/var/opt/mssql
+      - /D/_tmp:/var/opt/mssql/backup:ro
+    ports:
+      - "1434:1433"       
+  seq:
+    image: datalust/seq:latest
+    container_name: seq
+    restart: unless-stopped
+    environment:
+      ACCEPT_EULA: "Y"
+      SEQ_PASSWORD: "!Yran5act10n!"
+    ports:
+      - "5341:80"
+    volumes:
+      - /d/Projects/Scratch/Containers/Seq:/data
